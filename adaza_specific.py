@@ -15,7 +15,11 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 #from transformers import pipeline
 import pinecone
+import os
 
+
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+#Api-Key = os.environ.get('PINECONE_API_KEY')
 model_name = "gpt2-medium"
 model_revision = "2.0"
 #nlp = pipeline("text-generation", "gpt2")
@@ -61,7 +65,7 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(text_chunks):
-    embeddings = OpenAIEmbeddings(openai_api_key="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")
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     #vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     vectorstore = Pinecone.from_texts(texts=text_chunks,embedding=embeddings,index_name=index_name)
@@ -70,7 +74,7 @@ def get_vectorstore(text_chunks):
 
 
 def get_conversation_chain(vectorstore):
-    llm = ChatOpenAI(openai_api_key="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")
+    llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY)
     # llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
 
     memory = ConversationBufferMemory(
